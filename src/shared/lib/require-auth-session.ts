@@ -7,7 +7,7 @@ import { createRequireAuthSession, type AuthenticatedUser } from './auth-session
 const getServerSession = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (session === null) return null;
-  return { user: { id: session.user.id, email: session.user.email } };
+  return { user: { id: session.user.id, name: session.user.name, email: session.user.email } };
 };
 
 export const requireAuthSession = createRequireAuthSession(getServerSession);

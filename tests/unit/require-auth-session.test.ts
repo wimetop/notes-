@@ -9,11 +9,11 @@ describe('createRequireAuthSession', () => {
     await expect(requireAuthSession()).rejects.toMatchObject({ status: 401 });
   });
 
-  it('returns only the authenticated user identity', async () => {
+  it('returns the authenticated display name from a valid session', async () => {
     const requireAuthSession = createRequireAuthSession(async () => ({
       user: { id: 'user-a', email: 'a@example.com', name: 'A' }
     }));
 
-    await expect(requireAuthSession()).resolves.toEqual({ id: 'user-a', email: 'a@example.com' });
+    await expect(requireAuthSession()).resolves.toEqual({ id: 'user-a', name: 'A', email: 'a@example.com' });
   });
 });
