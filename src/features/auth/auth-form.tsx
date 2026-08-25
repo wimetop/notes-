@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { authClient } from './auth-client';
@@ -27,5 +28,9 @@ export function AuthForm({ mode }: Readonly<{ mode: 'login' | 'register' }>) {
     <label htmlFor="password">Пароль</label><input id="password" name="password" type="password" autoComplete={register ? 'new-password' : 'current-password'} minLength={8} required />
     {error && <p role="alert">{error}</p>}
     <button type="submit" disabled={busy}>{busy ? 'Зачекайте…' : register ? 'Зареєструватися' : 'Увійти'}</button>
+    <p className="auth-switch">
+      {register ? 'Вже є акаунт? ' : 'Вперше тут? '}
+      <Link href={register ? '/login' : '/register'}>{register ? 'Увійти' : 'Створити акаунт'}</Link>
+    </p>
   </form>;
 }
