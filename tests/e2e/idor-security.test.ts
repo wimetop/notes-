@@ -35,4 +35,37 @@ describe('IDOR protection', () => {
     expect(response.status).toBe(404);
     await expect(response.json()).resolves.toEqual({ error: 'Not found' });
   });
+
+  it('keeps a note in trash until its owner restores it', async () => {
+    const cookie = await register('E2E Lifecycle');
+    const created = await fetch(`${baseUrl}/api/notes`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', cookie },
+      body: JSON.stringify({ title: 'Recoverable note' }),
+    });
+    expect(created.status).toBe(201);
+    const note = await created.json() as { id: string };
+
+    const removed = await fetch(`${baseUrl}/api/notes/${note.id}`, {
+      method: 'DELETE',
+      headers: { cookie },
+    });
+    expect(removed.status).toBe(204);
+
+    const trash = await fetch(`${baseUrl}/api/notes?trash=true`, { headers: { cookie } });
+    await expect(trash.json()).resolves.toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: note.id, deletedAt: expect.any(String) }),
+    ]));
+
+    const restored = await fetch(`${baseUrl}/api/notes/${note.id}/restore`, {
+      method: 'POST',
+      headers: { cookie },
+    });
+    expect(restored.status).toBe(200);
+
+    const active = await fetch(`${baseUrl}/api/notes`, { headers: { cookie } });
+    await expect(active.json()).resolves.toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: note.id, deletedAt: null }),
+    ]));
+  });
 });
