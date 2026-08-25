@@ -1,20 +1,20 @@
 ---
 version: alpha
 name: "Нотатки+"
-description: "Calm, tactile workspace for personal notes in Ukrainian."
+description: "Apple-inspired, light-first workspace for personal notes in Ukrainian."
 colors:
-  ink: "#1F2A24"
-  paper: "#F2F3EC"
+  ink: "#1D1D1F"
+  paper: "#F5F5F7"
   panel: "#FFFFFF"
-  moss: "#2F6B52"
-  clay: "#B75D46"
-  mist: "#D9E2D5"
-  focus: "#275DDE"
+  primary: "#007AFF"
+  destructive: "#FF3B30"
+  separator: "#D2D2D7"
+  focus: "#007AFF"
 typography:
   display:
-    fontFamily: "Georgia, 'Times New Roman', serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif"
   sans:
-    fontFamily: "Arial, Helvetica, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif"
   mono:
     fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace"
 rounded:
@@ -37,7 +37,7 @@ components:
 
 ### Creative North Star
 
-An annotated field notebook: soft paper surface, practical ink, and one moss-green mark that distinguishes saved work from draft space.
+Apple Notes with less chrome: neutral system surfaces, clear typography, restrained blue actions, and note content as the primary visual object.
 
 ### Product context and register
 
@@ -46,14 +46,14 @@ An annotated field notebook: soft paper surface, practical ink, and one moss-gre
 - **Locale(s) and language policy:** Ukrainian only in version one; dates remain browser-local until a locale provider is introduced.
 - **Usage scene:** desktop-first personal workspace with functional narrow-mobile layout.
 - **Register:** product.
-- **Memorable signature:** note cards use a narrow moss left rule that carries the notebook metaphor without adding decoration.
-- **Restraint:** forms, destructive controls, and error states remain conventional and high-contrast.
-- **Anti-references:** dashboard gradients, neon admin panels, and faux paper textures that reduce legibility.
+- **Memorable signature:** an editorially spacious note editor with a subtle sheet-like elevation on the neutral system canvas.
+- **Restraint:** no gradients, textures, or decorative illustrations; only data and actions remain visible.
+- **Anti-references:** dashboard gradients, hard card borders, faux paper textures, and loud SaaS color palettes.
 - **Token ownership/runtime mapping:** this file is implemented by CSS variables in `src/app/globals.css`; shared UI components consume those variables.
 
 ## Colors
 
-`paper` is the document surface, `panel` is an editable object, `ink` is primary text, and `moss` is the only primary action color. `clay` communicates destructive actions. `focus` is reserved for keyboard focus and does not depend on color alone.
+`paper` is the system canvas, `panel` is an editable object, `ink` is primary text, `primary` is the sole primary action color, and `destructive` communicates soft delete. `focus` is reserved for keyboard focus and does not depend on color alone.
 
 ## Typography
 
