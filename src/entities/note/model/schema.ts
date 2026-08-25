@@ -10,7 +10,8 @@ export const updateNoteSchema = createNoteSchema.partial().refine(
   { message: 'At least one editable field is required' }
 );
 export const noteQuerySchema = z.object({
-  q: z.string().trim().max(120).optional()
+  q: z.string().trim().max(120).optional(),
+  trash: z.literal('true').optional()
 });
 
 export type CreateNoteInput = z.infer<typeof createNoteSchema>;
