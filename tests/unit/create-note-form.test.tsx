@@ -13,4 +13,9 @@ describe('CreateNoteForm', () => {
     const input = screen.getByLabelText('Назва');
     expect(input).toHaveAttribute('aria-describedby', 'create-note-title-error');
   });
+
+  it('associates the body input with an accessible validation message', () => {
+    render(<QueryClientProvider client={new QueryClient()}><CreateNoteForm /></QueryClientProvider>);
+    expect(screen.getByLabelText('Текст')).toHaveAttribute('aria-describedby', 'create-note-body-error');
+  });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
 
 const baseUrl = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
+const dockerComposeEnv = { ...process.env, POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? 'notes_plus' };
 
 async function register(name: string): Promise<string> {
   const email = `e2e-${crypto.randomUUID()}@example.test`;
@@ -88,7 +89,7 @@ describe('IDOR protection', () => {
 
     const keyExists = execFileSync('docker', [
       'compose', 'exec', '-T', 'redis', 'redis-cli', 'EXISTS', `notes:v1:list:${note.userId}`,
-    ], { cwd: process.cwd(), encoding: 'utf8' });
+    ], { cwd: process.cwd(), encoding: 'utf8', env: dockerComposeEnv });
     expect(keyExists.trim()).toBe('1');
   });
 
@@ -106,18 +107,18 @@ describe('IDOR protection', () => {
     execFileSync('docker', [
       'compose', 'exec', '-T', 'postgres', 'psql', '-U', 'notes_plus', '-d', 'notes_plus', '-c',
       `UPDATE notes SET deleted_at = NOW() - INTERVAL '31 days' WHERE id = '${note.id}'`,
-    ], { cwd: process.cwd(), stdio: 'pipe' });
+    ], { cwd: process.cwd(), stdio: 'pipe', env: dockerComposeEnv });
     const output = execFileSync('docker', [
       'compose', 'run', '--rm', '--no-deps', 'migrate', 'npx', 'tsx', '-e',
       "import('./src/worker/jobs/purge-trash.job.ts').then(async ({ purgeTrash }) => { console.log(await purgeTrash()); process.exit(0); })",
-    ], { cwd: process.cwd(), encoding: 'utf8' });
+    ], { cwd: process.cwd(), encoding: 'utf8', env: dockerComposeEnv });
 
     expect(output).toContain('1');
     const cacheAfterPurge = execFileSync('docker', [
       'compose', 'exec', '-T', 'redis', 'redis-cli', 'EXISTS', `notes:v1:list:${note.userId}`,
-    ], { cwd: process.cwd(), encoding: 'utf8' });
+    ], { cwd: process.cwd(), encoding: 'utf8', env: dockerComposeEnv });
     expect(cacheAfterPurge.trim()).toBe('0');
     const response = await fetch(`${baseUrl}/api/notes/${note.id}`, { headers: { cookie } });
     expect(response.status).toBe(404);
-  });
+  }, 15_000);
 });

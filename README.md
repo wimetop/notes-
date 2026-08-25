@@ -10,7 +10,7 @@
 ## Швидкий запуск
 
 ```powershell
-Copy-Item .env.example .env.local
+Copy-Item .env.example .env
 docker compose up --build -d
 ```
 
@@ -35,6 +35,7 @@ curl.exe http://localhost:3000/api/health
 
 | Змінна | Призначення |
 | --- | --- |
+| `POSTGRES_PASSWORD` | Пароль локального PostgreSQL контейнера |
 | `DATABASE_URL` | PostgreSQL connection string |
 | `REDIS_URL` | Redis connection string |
 | `BETTER_AUTH_SECRET` | Секрет Better Auth, щонайменше 32 символи |
@@ -43,7 +44,7 @@ curl.exe http://localhost:3000/api/health
 | `CRON_PURGE_SCHEDULE` | Cron-розклад BullMQ cleanup job |
 | `PORT` | Порт Next.js, за замовчуванням `3000` |
 
-Docker Compose уже містить development-значення. Для будь-якого не локального середовища замініть `BETTER_AUTH_SECRET`, паролі та URL на власні секрети.
+Docker Compose вимагає `POSTGRES_PASSWORD`, `BETTER_AUTH_SECRET` і `BETTER_AUTH_URL` зі змінних середовища. Для будь-якого не локального середовища використовуйте секрет-менеджер, а не versioned `.env` файл.
 
 ## Архітектура і гарантії
 

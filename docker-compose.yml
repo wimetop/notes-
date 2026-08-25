@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: notes_plus
       POSTGRES_USER: notes_plus
-      POSTGRES_PASSWORD: notes_plus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U notes_plus -d notes_plus"]
   redis:
@@ -16,15 +16,16 @@ services:
       context: .
       target: migrate
     environment: &app_env
-      DATABASE_URL: postgresql://notes_plus:notes_plus@postgres:5432/notes_plus
+      DATABASE_URL: postgresql://notes_plus:${POSTGRES_PASSWORD}@postgres:5432/notes_plus
       REDIS_URL: redis://redis:6379
-      BETTER_AUTH_SECRET: development-secret-must-be-replaced-12345
-      BETTER_AUTH_URL: http://localhost:3000
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?Set BETTER_AUTH_URL}
       TRASH_TTL_DAYS: "30"
       CRON_PURGE_SCHEDULE: "0 3 * * *"
       PORT: "3000"
     depends_on:
       postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
   web:
     build: .
     environment: *app_env

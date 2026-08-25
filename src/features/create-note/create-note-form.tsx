@@ -15,7 +15,8 @@ export function CreateNoteForm() {
     <input id="create-note-title" aria-invalid={errors.title !== undefined} aria-describedby={titleErrorId} disabled={isPending} {...register('title')} />
     <p id={titleErrorId}>{errors.title?.message}</p>
     <label htmlFor="create-note-body">Текст</label>
-    <textarea className="resize-none" id="create-note-body" disabled={isPending} {...register('body')} />
+    <textarea className="resize-none" id="create-note-body" aria-invalid={errors.body !== undefined} aria-describedby="create-note-body-error" disabled={isPending} {...register('body')} />
+    <p id="create-note-body-error" role="alert">{errors.body?.message}</p>
     <button type="submit" disabled={isPending}>{isPending ? 'Створення…' : 'Створити нотатку'}</button>
   </form>;
 }
