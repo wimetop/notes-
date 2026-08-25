@@ -12,5 +12,6 @@ describe('health handler', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const response = await createHealthHandler(async () => undefined, async () => { throw new Error('Redis unavailable'); })();
     expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({ status: 'unavailable', db: true, redis: false });
   });
 });
