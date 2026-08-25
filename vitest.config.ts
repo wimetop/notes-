@@ -9,6 +9,8 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    pool: 'forks',
+    maxWorkers: 1,
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx']
   }
 });
