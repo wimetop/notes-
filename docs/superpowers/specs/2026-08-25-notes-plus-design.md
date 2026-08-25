@@ -41,7 +41,8 @@ Drizzle визначає Better Auth таблиці `user`, `session`, `account`
 `verification`, а також `notes`:
 
 - `id uuid primary key`;
-- `user_id`, що належить авторизованому користувачу;
+- `user_id text`, що належить авторизованому користувачу та є зовнішнім ключем
+  на `user.id text` Better Auth;
 - `title`, `body`;
 - `deleted_at`, `created_at`, `updated_at`.
 
@@ -82,10 +83,11 @@ Zod-схеми — єдине джерело істини для DTO. Route hand
 активний список без пошукового запиту. Ключ: `notes:v1:list:${userId}`, TTL —
 60 секунд.
 
-Усі доступи до Redis виконуються тільки через `safeRedis`. Його `get` повертає
-`null` при помилці, а `set`, `del` і `delPattern` логують проблему та не
-переривають запит. ioredis створюється з `lazyConnect: true`,
-`maxRetriesPerRequest: 1` і безпечним error listener. Після створення,
+Усі доступи вебзастосунку до Redis виконуються тільки через `safeRedis`. Його
+`get` повертає `null` при помилці, а `set`, `del` і `delPattern` логують
+проблему та не переривають запит. Клієнт кешу в `shared/redis/client.ts`
+створюється з `lazyConnect: true`, `maxRetriesPerRequest: 1` і безпечним
+error listener. Після створення,
 редагування, soft-delete, restore та purge інвалідується ключ користувача.
 
 `/api/health` навмисно не використовує graceful fallback: паралельно виконує
@@ -95,9 +97,12 @@ Zod-схеми — єдине джерело істини для DTO. Route hand
 ## UI та стан клієнта
 
 `QueryClientProvider` має `staleTime: 30_000` і
-`refetchOnWindowFocus: false`. `entities/note` постачає query hooks для
-активного списку та кошика, а mutation hooks виконують оптимістичні оновлення
-і завжди інвалідують query key `['notes']`.
+`refetchOnWindowFocus: false`. `entities/note/model/query-keys.ts` визначає
+єдину фабрику `noteKeys`: `all`, `lists()`, `list(search)`, `trash()` і
+`detail(id)`. `entities/note` постачає query hooks для активного списку та
+кошика, а mutation hooks виконують оптимістичні оновлення за точними ключами й
+завжди завершують повною інвалідацією
+`queryClient.invalidateQueries({ queryKey: noteKeys.all })`.
 
 Екрани: login, register, список нотаток зі створенням і debounced-пошуком,
 деталі/редагування та кошик. Features відповідають за auth, create, edit,
@@ -108,7 +113,9 @@ delete і restore. Форми мають доступні повідомленн
 ## Воркер і очищення
 
 BullMQ запускається окремим процесом командою `npm run worker`, із власним
-Redis-з'єднанням. Repeatable job `trash:purge` використовує
+Redis-з'єднанням у `worker/redis.ts`. Воно не є клієнтом safe-cache і має
+`maxRetriesPerRequest: null` та `enableReadyCheck: false`, як вимагає BullMQ.
+Repeatable job `trash:purge` використовує
 `CRON_PURGE_SCHEDULE`. Вона атомарно видаляє нотатки з `deleted_at`, старшим за
 `TRASH_TTL_DAYS`, через `DELETE ... RETURNING user_id`, дедуплікує user IDs і
 безпечним чином інвалідує їхній кеш. Операція ідемпотентна: повторний запуск
@@ -126,9 +133,13 @@ Redis-з'єднанням. Repeatable job `trash:purge` використовує
 
 Multi-stage Dockerfile на `node:22-alpine` має stages deps, builder і runner.
 Runner використовує non-root користувача `nextjs:nodejs`, standalone output,
-static/public assets і `dist/worker`. Compose чекає healthchecks Postgres і
-Redis, запускає `migrate` один раз, а `web` та `worker` залежать від його
-успішного завершення. `web` має healthcheck на `/api/health`; воркер не
+static/public assets і `dist/worker`. `tsup.config.ts` збирає
+`src/worker/index.ts` у ESM для Node 22, бандлить внутрішні `@/*` модулі та
+залишає production-залежності доступними в runtime. Runner копіює
+`.next/standalone` у `/app`, `.next/static` у `/app/.next/static`, `public` у
+`/app/public` і `dist/worker` у `/app/dist/worker`. Compose чекає healthchecks
+Postgres і Redis, запускає `migrate` один раз, а `web` та `worker` залежать від
+його успішного завершення. `web` має healthcheck на `/api/health`; воркер не
 експонує порти.
 
 ## Перевірка якості
