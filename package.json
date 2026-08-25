@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
+    "test:e2e": "vitest run tests/e2e",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/shared/db/migrate.ts",
     "worker:build": "tsup",

@@ -1,33 +1,15 @@
 import { and, desc, eq, ilike, isNotNull, isNull } from 'drizzle-orm';
-import { z } from 'zod';
 
 import { getNotesCacheKey, type CreateNoteInput, type UpdateNoteInput } from '@/entities/note/model';
 import { db, notes } from '@/shared/db';
 import { safeRedis } from '@/shared/redis';
 
 import { NoteNotFoundError } from './errors';
+import { parseCachedNotes } from './note-cache';
 
 const listTtlSeconds = 60;
 
 export type Note = typeof notes.$inferSelect;
-
-const cachedNotesSchema = z.array(z.object({
-  id: z.string().uuid(),
-  userId: z.string(),
-  title: z.string(),
-  body: z.string().nullable(),
-  deletedAt: z.coerce.date().nullable(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date()
-}));
-
-function parseCachedNotes(value: string): Note[] | null {
-  try {
-    return cachedNotesSchema.parse(JSON.parse(value));
-  } catch {
-    return null;
-  }
-}
 
 export async function invalidateUserNotesCache(userId: string): Promise<void> {
   await safeRedis.del(getNotesCacheKey(userId));

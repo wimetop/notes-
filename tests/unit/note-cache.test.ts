@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { getNotesCacheKey } from '@/entities/note/model/cache';
+import { parseCachedNotes } from '@/entities/note/api/note-cache';
 
-describe('getNotesCacheKey', () => {
-  it('namespaces the active-list cache by user', () => {
-    expect(getNotesCacheKey('user-a')).toBe('notes:v1:list:user-a');
+describe('note cache parser', () => {
+  it('treats corrupt JSON as a cache miss', () => {
+    expect(parseCachedNotes('{bad-json')).toBeNull();
+  });
+
+  it('treats values that do not match the note DTO as a cache miss', () => {
+    expect(parseCachedNotes(JSON.stringify([{ id: 'not-a-uuid' }]))).toBeNull();
   });
 });
