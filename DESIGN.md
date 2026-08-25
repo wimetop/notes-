@@ -1,24 +1,25 @@
 ---
 version: alpha
 name: "Нотатки+"
-description: "Apple-inspired, light-first workspace for personal notes in Ukrainian."
+description: "Night Notebook workspace for personal notes in Ukrainian."
 colors:
-  ink: "#1D1D1F"
-  paper: "#F5F5F7"
-  panel: "#FFFFFF"
-  primary: "#007AFF"
-  destructive: "#FF3B30"
-  separator: "#D2D2D7"
-  focus: "#007AFF"
+  canvas: "#16161D"
+  surface: "#22232D"
+  paper: "#F4F1EA"
+  ink: "#23232B"
+  muted: "#686875"
+  primary: "#7467E8"
+  destructive: "#C5504C"
+  focus: "#AAA1FF"
 typography:
   display:
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif"
+    fontFamily: "Georgia, 'Times New Roman', serif"
   sans:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif"
   mono:
     fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace"
 rounded:
-  DEFAULT: "0.625rem"
+  DEFAULT: "0.75rem"
   sm: "0.375rem"
   lg: "1rem"
 spacing:
@@ -37,7 +38,7 @@ components:
 
 ### Creative North Star
 
-Apple Notes with less chrome: neutral system surfaces, clear typography, restrained blue actions, and note content as the primary visual object.
+Night Notebook: a quiet personal archive with a graphite canvas, warm paper writing surfaces, and a restrained indigo action color.
 
 ### Product context and register
 
@@ -46,22 +47,22 @@ Apple Notes with less chrome: neutral system surfaces, clear typography, restrai
 - **Locale(s) and language policy:** Ukrainian only in version one; dates remain browser-local until a locale provider is introduced.
 - **Usage scene:** desktop-first personal workspace with functional narrow-mobile layout.
 - **Register:** product.
-- **Memorable signature:** an editorially spacious note editor with a subtle sheet-like elevation on the neutral system canvas.
-- **Restraint:** no gradients, textures, or decorative illustrations; only data and actions remain visible.
-- **Anti-references:** dashboard gradients, hard card borders, faux paper textures, and loud SaaS color palettes.
+- **Memorable signature:** a small archive index label on workspace headings and note cards.
+- **Restraint:** depth comes from the dark canvas and warm writing surfaces; decorative graphics are excluded.
+- **Anti-references:** generic SaaS dashboards, faux paper textures, neon gradients, and oversized pill controls.
 - **Token ownership/runtime mapping:** this file is implemented by CSS variables in `src/app/globals.css`; shared UI components consume those variables.
 
 ## Colors
 
-`paper` is the system canvas, `panel` is an editable object, `ink` is primary text, `primary` is the sole primary action color, and `destructive` communicates soft delete. `focus` is reserved for keyboard focus and does not depend on color alone.
+`canvas` is the application background, `surface` is the dark auth panel, `paper` is the writing surface, `ink` is readable note text, and `primary` is the sole primary action color. `focus` is reserved for keyboard focus and does not depend on color alone.
 
 ## Typography
 
-Display type is restricted to page titles and note titles. Body and controls use a stable system sans stack. Monospace is used only for technical or date metadata.
+Georgia is restricted to page and note titles. Body and controls use a stable system sans stack. Monospace is used only for technical or date metadata.
 
 ## Layout
 
-Pages are centered to `page-max`, with natural document scrolling. Desktop uses a two-column creation/list layout; narrow screens stack the form above the list. Async states reserve the card/form region rather than shifting controls.
+Pages are centered to `page-max`, with natural document scrolling. Desktop uses a two-column creation/list layout; narrow screens stack the form above the list. Auth screens pair a contextual panel with a focused form and collapse to one card on mobile.
 
 ## Elevation & Depth
 
@@ -79,7 +80,7 @@ Every control has visible focus, hover, active, disabled, busy, validation-error
 
 ### Buttons and actions
 
-Primary actions use moss solid styling; neutral actions use outline; destructive actions use clay outline. Busy labels preserve the button width.
+Primary actions use indigo solid styling; neutral actions use an outline; destructive actions use a muted red outline. Busy labels preserve the button width.
 
 ### Forms and overlays
 
