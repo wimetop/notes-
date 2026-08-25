@@ -16,7 +16,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/shared/db/migrate.ts",
     "worker:build": "tsup",
-    "worker": "node dist/worker/index.js"
+    "worker": "node dist/worker/index.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
