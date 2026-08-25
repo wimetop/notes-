@@ -16,7 +16,7 @@ export function EditNoteForm({ note }: Readonly<{ note: EditableNote }>) {
     <input id="edit-note-title" aria-invalid={errors.title !== undefined} aria-describedby="edit-note-title-error" disabled={isPending} {...register('title')} />
     <p id="edit-note-title-error">{errors.title?.message}</p>
     <label htmlFor="edit-note-body">Текст</label>
-    <textarea id="edit-note-body" aria-invalid={errors.body !== undefined} aria-describedby="edit-note-body-error" disabled={isPending} {...register('body')} />
+    <textarea className="resize-none" id="edit-note-body" aria-invalid={errors.body !== undefined} aria-describedby="edit-note-body-error" disabled={isPending} {...register('body')} />
     <p id="edit-note-body-error">{errors.body?.message}</p>
     <button type="submit" disabled={isPending}>{isPending ? 'Збереження…' : 'Зберегти зміни'}</button>
   </form>;

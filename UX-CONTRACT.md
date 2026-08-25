@@ -11,6 +11,8 @@ Visual rules live in `DESIGN.md`. This file owns cross-screen behavior.
 | Restore | `restore-note` feature | restore returns note to active list and invalidates all note queries |
 | Scrollbar | `src/app/globals.css` | visible global scrollbar with stable gutter |
 | Feedback | shared live status region | success acknowledgement plus inline actionable request errors |
+| Auth navigation | `features/auth/AuthForm` | login links new visitors to `/register`; register links returning visitors to `/login` |
+| Identity display | `widgets/header/Header` | the dashboard layout passes the validated session name and email; no client storage is used |
 
 ## Outcomes
 
@@ -19,3 +21,4 @@ Visual rules live in `DESIGN.md`. This file owns cross-screen behavior.
 - Soft delete moves the note to `/notes/trash`; hard delete is not exposed in the application UI.
 - Restore keeps the user in trash and confirms the note is again active.
 - Missing/foreign notes show the same not-found outcome.
+- Header identity is visible at desktop widths; narrow viewports retain the avatar and a truncated display name.
